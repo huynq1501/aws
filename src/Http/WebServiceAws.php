@@ -4,6 +4,7 @@ namespace nguyenanhung\Backend\huynq_aws\Http;
 
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
+use Exception;
 use nguyenanhung\Validation\Validation;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +23,7 @@ class WebServiceAws extends BaseHttp
     private $aws;
 
     /**
-     * WebServiceAccount constructor.
+     * WebServiceAws constructor.
      *
      * @param array $options
      *
@@ -46,14 +47,14 @@ class WebServiceAws extends BaseHttp
             $isValid = Validation::is_valid(
                 $inputData,
                 [
-                    'Bucket'=>['required'],
-                    'Key'=>['required'],
-                    'SourceFile'=>['required']
+                    'Bucket'     => ['required'],
+                    'Key'        => ['required'],
+                    'SourceFile' => ['required']
                 ],
                 [
-                    'Bucket'      => ['required' => 'Bucket is required'],
-                    'Key'      => ['required' => 'Key is required'],
-                    'SourceFile'      => ['required' => 'SourceFile is required'],
+                    'Bucket'     => ['required' => 'Bucket is required'],
+                    'Key'        => ['required' => 'Key is required'],
+                    'SourceFile' => ['required' => 'SourceFile is required'],
                 ]
             );
             $this->logger->debug(__METHOD__ . '.' . __LINE__, 'isValid:', $isValid);
@@ -64,13 +65,12 @@ class WebServiceAws extends BaseHttp
                     'input_data'  => $this->inputData
                 ];
                 $this->logger->error(__METHOD__ . '.' . __LINE__, $this->response['desc']);
-            }
-            else{
+            } else {
                 $data = array(
                     'Bucket'     => $inputData['Bucket'],
                     'Key'        => $inputData['Key'],
                     'SourceFile' => $inputData['SourceFile'],
-                    'ACL'        => empty($inputData['ACL'])?'':'public-read',
+                    'ACL'        => empty($inputData['ACL']) ? '' : 'public-read',
                 );
                 $result = $this->aws->putObject($data);
                 $this->logger->info(__METHOD__ . '.' . __LINE__, 'Success upload image, url : ' . $result['ObjectURL']);
@@ -88,6 +88,10 @@ class WebServiceAws extends BaseHttp
                 'status_code' => $e->getStatusCode(),
                 'desc'        => $e->getMessage(),
             ];
+        } catch (Exception $e) {
+            $this->logger->error(__CLASS__ . '.' . __FUNCTION__,
+                'File: ' . $e->getFile() . '-Line:' . $e->getLine() . '-Message:' . $e->getMessage());
+            $this->response = null;
         }
 
         return $this;
