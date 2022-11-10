@@ -16,5 +16,6 @@ If any question & request, please contact following information
 
 | Name        | Email                | Skype        | Facebook      |
 |-------------|----------------------|--------------|---------------|
-| Huy Nham Quang | huynq@beetsoft.com.vn | quanghuy03092017 | @quanghuy     |
+| Huy Nham Quang | huynq@beetsoft.com.vn | quanghuy03092017 | @quanghuy|
+
 From Vietnam with Love <3
